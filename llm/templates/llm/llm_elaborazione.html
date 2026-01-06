@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Elaborazione AI{% endblock %}
+
+{% block content %}
+<div class="container mt-md-4">
+    <h3>Analisi Intelligente: {{ articolo.titolo }}</h3>
+    <hr>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card bg-light p-3 mb-3 h-100">
+                <h5>Testo Originale</h5>
+                <p class="small text-muted" style="white-space: pre-wrap;">{{ articolo.testo }}</p>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-4 shadow-sm h-100">
+                <h5 class="mb-3">Configurazione AI</h5>
+                {% crispy form %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

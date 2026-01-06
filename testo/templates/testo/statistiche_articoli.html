@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Statistiche Globali{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="card shadow-sm border-0 mb-4 bg-primary text-white text-center">
+        <div class="card-body py-5">
+            <h3 class="text-uppercase small fw-bold mb-3" style="letter-spacing: 2px;">Complessità Media Globale</h3>
+            <h1 class="display-1 fw-bold">{{ complessita_media }}</h1>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <label class="text-muted small d-block mb-2">Media Termini Differenti per Testo</label>
+                    <h2 class="fw-bold text-dark">{{ quantita_media }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <label class="text-muted small d-block mb-2">Frequenza Media Termini</label>
+                    <h2 class="fw-bold text-dark">{{ frequenza_media }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5 text-center">
+        <div class="col-md-4">
+            <div class="p-3 border rounded bg-white shadow-sm">
+                <i class="fas fa-file-alt text-primary mb-2"></i>
+                <div class="text-muted small">Totale Testi</div>
+                <div class="h4 fw-bold mb-0">{{ testi_tot }}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 border rounded bg-white shadow-sm">
+                <i class="fas fa-user-edit text-success mb-2"></i>
+                <div class="text-muted small">Top Contributor</div>
+                <div class="h4 fw-bold mb-0">{{ autore_max }}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 border rounded bg-white shadow-sm">
+                <i class="fas fa-dictionary text-warning mb-2"></i>
+                <div class="text-muted small">Totale Termini Unici</div>
+                <div class="h4 fw-bold mb-0">{{ termini_tot }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-5">
+        <div class="card-header bg-white py-3">
+            <h4 class="mb-0 fw-bold"><i class="fas fa-list-ol me-2"></i>Elenco Termini Globali</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle w-100" id="dtTab">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Parola</th>
+                            <th class="text-center">Frequenza Totale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for termine, occorrenza in termini_con_frequenze.items %}
+                        <tr>
+                            <td class="fw-bold text-primary">{{ termine }}</td>
+                            <td class="text-center">
+                                <span class="badge rounded-pill bg-light text-dark border px-3">
+                                    {{ occorrenza }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#dtTab').DataTable({
+            "ordering": true,
+            "bLengthChange": false,
+            "paging": false,
+            "autoWidth": false,
+            "bSortable": true,
+            "info": false,
+            "aoColumnDefs": [
+                { "aTargets": [0], "bSortable": true },
+                { "aTargets": [1], "bSortable": true }
+            ]
+        });
+
+    });
+
+</script>
+{% endblock %}

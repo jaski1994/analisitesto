@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_filters %}
+{% load django_tables2 %}
+
+{% block title %}Profilo Utente - Testi Personali{% endblock %}
+
+{% block content %}
+<div class=" py-5">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-user-circle fa-5x text-secondary"></i>
+                    </div>
+                    <h3 class="card-title">{{ logged_user_username }}</h3>
+                    <p class="text-muted">{{ email }}</p>
+                    <hr>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'testo:user-blacklist' %}" class="btn btn-outline-danger btn-block mb-2">
+                            <i class="fas fa-user-slash mr-2"></i>Gestisci Blacklist
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-robot mr-2"></i>Gestione Modelli AI</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for model in available_models %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ model.name }}</strong>
+                                {% if model.onDisk %}
+                                <br><span class="badge badge-success">Caricato</span>
+                                {% else %}
+                                <br><span class="badge badge-secondary">Non Caricato</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="btn-group">
+                                {% if model.isLoaded %}
+                                <a href="{% url 'llm:llm-unload' model.name %}" class="btn btn-sm btn-outline-warning">
+                                    Unload
+                                </a>
+                                {% else %}
+                                <a href="{% url 'llm:llm-load' model.name %}" class="btn btn-sm btn-outline-primary">
+                                    Load
+                                </a>
+                                {% endif %}
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted">Nessun modello disponibile.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <form id="compareForm" method="POST" action="{% url 'testo:compare_redirect' %}">
+                    {% csrf_token %}
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">I tuoi Testi Personali</h4>
+                        <div class="btn-group">
+                            <button type="submit" id="compareBtn" class="btn btn-primary btn-sm mr-2" disabled
+                                title="Seleziona 2 testi per comparare">
+                                <i class="fas fa-columns mr-1"></i> Compara Selezionati
+                            </button>
+                            <a href="{% url 'testo:articolo-add' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus mr-1"></i> Nuovo Testo
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if table %}
+                        <div class="table-responsive">
+                            {% render_table table %}
+                        </div>
+                        {% else %}
+                        <p class="text-center text-muted">Non ci sono testi da visualizzare.</p>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Logic to manage checkbox selection
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('select-checkbox')) {
+            const checkboxes = document.querySelectorAll('.select-checkbox:checked');
+            const compareBtn = document.getElementById('compareBtn');
+
+            // Enable button only if exactly 2 are selected
+            compareBtn.disabled = (checkboxes.length !== 2);
+
+            // Optional: Alert if user tries to select a 3rd item
+            if (checkboxes.length > 2) {
+                alert("Puoi selezionare solo 2 testi alla volta.");
+                e.target.checked = false;
+                compareBtn.disabled = false; // keep it enabled for the 2 already checked
+            }
+        }
+    });
+</script>
+{% endblock %}

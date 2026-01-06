@@ -1,0 +1,171 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{% block title %}{% endblock %}</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- FontAwesome -->
+  <script src="https://kit.fontawesome.com/57632e5759.js" crossorigin="anonymous"></script>
+
+  <!-- DataTables -->
+  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Table -->
+  <link href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css" rel="stylesheet">
+
+  <!-- Datepicker -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css"
+    integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+
+  {% block extrahead %}{% endblock %}
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+    }
+
+    .my-navbar {
+      box-shadow: 0 10px 30px rgba(216, 216, 216, 0.45);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+    }
+
+    .nav-link {
+      border-bottom: 4px solid transparent;
+      margin-right: 24px;
+      transition: 0.3s ease;
+      padding: 5px;
+    }
+
+    .nav-link:hover {
+      color: black;
+      border-bottom-color: #eb4027;
+    }
+
+    .nav-active a {
+      font-weight: 600;
+      border-bottom-color: #eb4027;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg bg-white my-navbar">
+    <div class="container">
+      <a class="navbar-brand">Analizza il vocabolario</a>
+
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'testo:articolo-add' %}">Inserisci</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'testo:statistiche-articoli' %}">Statistiche</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'llm:llm-analisi' %}">Llm Analisi</a>
+          </li>
+        </ul>
+
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              {{ logged_user_username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'testo:profile' %}">Mio profilo</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="{% url 'testo:logout' %}">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div>
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- JS -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- DataTables -->
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+  <!-- Bootstrap Table -->
+  <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+
+  <!-- Datepicker -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js"
+    integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+
+  <!-- PERSONAL SCRIPT -->
+  <script>
+    $(function () {
+      $("#id_data").datepicker({ format: 'yyyy-mm-dd' });
+
+      const lang1 = ["it"];
+      const lang1txt = ["Italiano"];
+      const lang2 = ["en", "fr", "de", "zh-cn", "ko", "es", "pt", "ru", "af", "hr", "ja", "da", "nl", "ga", "pl", "sq", "mt", "no", "hi", "id", "tl", "fi", "hu", "is", "ro", "sl", "sw", "sv", "tr"];
+      const lang2txt = ["Inglese", "Francese", "Tedesco", "Cinese", "Coreano", "Spagnolo", "Portoghese", "Russo", "Afrikan", "Croato", "Giapponese", "Danese", "Olandese", "Irlandese", "Polacco", "Albanese", "Maltese", "Norvegese", "Indiano", "Indonesiano", "Filippino", "Finlandese", "Ungherese", "Islandese", "Rumeno", "Sloveno", "Swahili", "Svedese", "Turco"];
+
+      const elm = {
+        lang1: $("#lang1"),
+        lang2: $("#lang2"),
+        user: $("#lang1"),
+        output: $("#lang2"),
+        userInput: $("#user"),
+        langOutput: $("#output")
+      };
+
+      lang1.forEach((l, i) => elm.lang1.append(`<option value="${l}">${lang1txt[i]}</option>`));
+      lang2.forEach((l, i) => elm.lang2.append(`<option value="${l}">${lang2txt[i]}</option>`));
+
+      $("#translate").on("click", function () {
+        const text = elm.userInput.val().replace(/ /g, '%20');
+        $.getJSON(
+          `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${elm.user.val()}&tl=${elm.output.val()}&dt=t&q=${text}`,
+          function (json) {
+            elm.langOutput.val(json[0][0][0]);
+          }
+        );
+      });
+
+      $("#clear").on("click", function () {
+        elm.userInput.val("");
+        elm.langOutput.val("");
+      });
+    });
+  </script>
+
+</body>
+
+</html>
