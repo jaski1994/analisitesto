@@ -1,168 +1,100 @@
 {% extends "base.html" %}
-<!-- Da verificare eventuali conflitti con il CSS (FORSE NEL BODY IL FONT-FAMILY CREA CONFLITTI)-->
+{% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-
-{% block title  %}Traduci{% endblock %}
+{% block title %}Traduci{% endblock %}
 
 {% block content %}
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-  <!-- Per font varie lingue-->
-  <link href="https://fonts.googleapis.com/css?family=Rubik:400,600" rel="stylesheet">
-  <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-
-  <style>
-    body {
-      margin: 0;
-    {#font-family: Rubik;  #}
-      position: fixed;
-      top: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    * {
-    {#font-family: Rubik;  #}
-    }
-
-    #container {
-    {#background: dodgerblue;  #}
-      padding-bottom: 5px;
-    }
-
-    .select-lang {
-      text-align: center;
-    }
-
-    .select-lang span:nth-child(1) {
-      float: left;
-    }
-
-    .select-lang span:nth-child(2) {
-      display: inline-block;
-      padding: 10px;
-      color: #fff;
-    }
-
-    .select-lang span:nth-child(3) {
-      float: right;
-    }
-
-    .select-lang span select {
-      output: none;
-      padding: 10px;
-      background: #00000;
-      border: none;
-      color: #fffff;
-    {#font-family: Rubik;  #}
-    }
-
-    .translater-text {
-      background: #fff;
-      margin: 0 5px 0px 5px;
-      overflow: hidden;
-    }
-
-    .translater-text textarea {
-      border: none;
-      width: 90%;
-      font-size: 18px;
-      padding: 10px;
-      height: 50px;
-      outline: none;
-      resize: none;
-    }
-
-    #translate {
-      padding: 10px;
-      background: dodgerblue;
-      border: none;
-      border-radius: 30px;
-      color: white;
-      font-weight: bold;
-      margin: 0 5px 5px 5px;
-      float: right;
-    }
-
-    .output {
-      background: #fff;
-    }
-
-    .output textarea {
-      border: none;
-      width: 90%;
-      font-size: 18px;
-      padding: 10px;
-      height: 50px;
-      outline: none;
-      resize: none;
-    }
-
-    #output {
-      background: transparent;
-      width: 100%;
-      border: none;
-      font-size: 18px;
-      padding: 10px;
-    }
-
-    #output:hover {
-    {#height: 150px;  #}
-      outline: none;
-    }
-
-    .output span {
-      display: block;
-      color: #1e90ff;
-      text-align: right;
-      padding: 10px;
-    }
-
-    .button {width: 100%;}
-
-    h3 {
-        text-align: center;
-    }
-
-  </style>
-</head>
-
-  <div id="container" class="container mt-md-2">
-    <input type="button" action="action"  onclick="window.history.go(-1); return false;" class="btn btn-primary" value="Indietro"></input>
-
-    <h3 style="align-content: center">Traduzione</h3> <br>
-    <table style="width:100%">
-
-        <tr>
-        <div class="select-lang">
-            <td style="width: 45%"><span><p>Lingua di partenza</p><select id="lang1"></select></span></td>
-            <td style="width: 10%; text-align:center"><span> <i class="fa fa-exchange"></i> </span></td>
-            <td style="width: 45%; text-align:right"><span><p>Lingua in cui tradurre</p><select id="lang2"></select></span></td>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary-custom text-white d-flex justify-content-between align-items-center">
+          <h3 class="mb-0">Traduzione</h3>
+          <button onclick="window.history.go(-1); return false;" class="btn btn-outline-light btn-sm">Indietro</button>
         </div>
-        </tr>
-        <tr>
-            <td style="text-align:center">
-                <div class="translater-text" style="text-align:center">
-                    <textarea id="user" readonly style="text-align:center">{{ termine.parola }}</textarea>
-                </div>
-            </td>
-            <td></td>
-            <td style="text-align:center">
-                <div class="output" style="text-align:center">
-                    <textarea id="output" placeholder="" readonly style="text-align:center"></textarea>
-                    <span> </span>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3" align="center"><button class="button" id="translate" style="text-align:center;float:none!important;display:inline;">Traduci</button></td>
-        </tr>
-    </table>
-  </div>
+        <div class="card-body">
+          <div class="row align-items-center mb-3">
+            <div class="col-md-5">
+              <label for="lang1" class="form-label fw-bold">Lingua di partenza</label>
+              <select id="lang1" class="form-select"></select>
+            </div>
+            <div class="col-md-2 text-center my-3 my-md-0">
+              <i class="fa fa-exchange text-muted"></i>
+            </div>
+            <div class="col-md-5">
+              <label for="lang2" class="form-label fw-bold">Lingua in cui tradurre</label>
+              <select id="lang2" class="form-select"></select>
+            </div>
+          </div>
 
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <div class="p-3 bg-light rounded border h-100">
+                <label class="small text-muted mb-2">Testo Originale</label>
+                <textarea id="user" class="form-control border-0 bg-transparent shadow-none" rows="4"
+                  readonly>{{ termine.parola }}</textarea>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <div class="p-3 bg-light rounded border h-100">
+                <label class="small text-muted mb-2">Traduzione</label>
+                <textarea id="output" class="form-control border-0 bg-transparent shadow-none fw-bold text-success"
+                  rows="4" readonly></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-grid mt-3">
+            <button id="translate" class="btn btn-action btn-lg">Traduci</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const lang1 = ["it"];
+    const lang1txt = ["Italiano"];
+    const lang2 = ["en", "fr", "de", "zh-cn", "ko", "es", "pt", "ru", "af", "hr", "ja", "da", "nl", "ga", "pl", "sq", "mt", "no", "hi", "id", "tl", "fi", "hu", "is", "ro", "sl", "sw", "sv", "tr"];
+    const lang2txt = ["Inglese", "Francese", "Tedesco", "Cinese", "Coreano", "Spagnolo", "Portoghese", "Russo", "Afrikan", "Croato", "Giapponese", "Danese", "Olandese", "Irlandese", "Polacco", "Albanese", "Maltese", "Norvegese", "Indiano", "Indonesiano", "Filippino", "Finlandese", "Ungherese", "Islandese", "Rumeno", "Sloveno", "Swahili", "Svedese", "Turco"];
+
+    const elm = {
+      lang1: document.getElementById("lang1"),
+      lang2: document.getElementById("lang2"),
+      user: document.getElementById("user"),
+      output: document.getElementById("output"),
+      translateBtn: document.getElementById("translate")
+    };
+
+    // Populate selects
+    lang1.forEach((l, i) => {
+      let option = document.createElement("option");
+      option.value = l;
+      option.text = lang1txt[i];
+      elm.lang1.appendChild(option);
+    });
+
+    lang2.forEach((l, i) => {
+      let option = document.createElement("option");
+      option.value = l;
+      option.text = lang2txt[i];
+      elm.lang2.appendChild(option);
+    });
+
+    elm.translateBtn.addEventListener("click", function () {
+      const text = elm.user.value.replace(/ /g, '%20');
+      fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${elm.lang1.value}&tl=${elm.lang2.value}&dt=t&q=${text}`)
+        .then(response => response.json())
+        .then(json => {
+          elm.output.value = json[0][0][0];
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          elm.output.value = "Errore durante la traduzione.";
+        });
+    });
+  });
+</script>
 {% endblock %}

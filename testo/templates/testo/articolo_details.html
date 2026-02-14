@@ -5,20 +5,20 @@
 <div class="container py-4">
 
     <div class="mb-3 d-flex justify-content-between align-items-center">
-        <button onclick="window.history.back();" class="btn btn-outline-primary btn-sm">
+        <button onclick="window.history.back();" class="btn btn-outline-action btn-sm">
             &larr; Indietro
         </button>
-        <a href="{% url 'llm:llm-elaborazione' articolo.id %}" class="btn btn-success btn-sm">
+        <a href="{% url 'llm:llm-elaborazione' articolo.id %}" class="btn btn-action btn-sm">
             <i class="fas fa-robot"></i> Nuova Analisi AI
         </a>
     </div>
 
-    <div class="card shadow-sm border-0 mb-4 bg-light text-center">
+    <div class="card shadow-sm border-0 mb-4 bg-primary-custom text-white text-center">
         <div class="card-body">
-            <h1 class="display-5 fw-bold text-dark">{{ articolo.titolo }}</h1>
+            <h1 class="display-5 fw-bold">{{ articolo.titolo }}</h1>
             <div class="py-2">
-                <span class="text-muted text-uppercase d-block small">Complessità</span>
-                <span class="display-2 fw-bold text-danger">{{ articolo.complessita }}</span>
+                <span class="text-white text-uppercase d-block small">Complessità</span>
+                <span class="display-2 fw-bold text-white">{{ articolo.complessita }}</span>
             </div>
         </div>
     </div>
@@ -54,22 +54,61 @@
         <div class="col-md-6">
             <div class="p-3 border rounded bg-white d-flex justify-content-between align-items-center shadow-sm">
                 <span>Quantità di termini:</span>
-                <span class="badge bg-primary fs-6">{{ articolo.quantita_termini }}</span>
+                <span class="badge bg-primary-custom fs-6">{{ articolo.quantita_termini }}</span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="p-3 border rounded bg-white d-flex justify-content-between align-items-center shadow-sm">
                 <span>Frequenza media:</span>
-                <span class="badge bg-secondary fs-6">{{ articolo.frequenza_media }}</span>
+                <span class="badge bg-secondary-custom text-dark fs-6">{{ articolo.frequenza_media }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-5">
+        <div class="col-md-2">
+            <div class="p-3 border rounded bg-white text-center shadow-sm h-100">
+                <label class="text-muted small d-block mb-1">Punteggio Finale</label>
+                <div class="display-6 fw-bold text-primary-custom">{{ articolo.final_score|default:"-" }}</div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="p-3 border rounded bg-white text-center shadow-sm h-100">
+                <label class="text-muted small d-block mb-1">Leggibilità</label>
+                <strong class="fs-5 text-dark">{{ articolo.readability_score|default:"-" }}</strong>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="p-3 border rounded bg-white text-center shadow-sm h-100">
+                <label class="text-muted small d-block mb-1">Diversità Lessicale</label>
+                <strong class="fs-5 text-dark">{{ articolo.lexical_diversity|default:"-" }}</strong>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="p-3 border rounded bg-white text-center shadow-sm h-100">
+                <label class="text-muted small d-block mb-1">Spelling</label>
+                <strong class="fs-5 text-dark">{{ articolo.spelling_score|default:"-" }}%</strong>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="p-3 border rounded bg-white text-center shadow-sm h-100">
+                <label class="text-muted small d-block mb-1">Chiarezza</label>
+                <strong class="fs-5 text-dark">{{ articolo.clarity_score|default:"-" }}</strong>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="p-3 border rounded bg-white text-center shadow-sm h-100">
+                <label class="text-muted small d-block mb-1">Rating AI</label>
+                <strong class="fs-5 text-action-custom">{{ articolo.ai_rating|default:"-" }}/10</strong>
             </div>
         </div>
     </div>
 
     {% if articolo.llm_results.all %}
     <div class="card mb-5 shadow-sm border-0 border-start border-success border-4">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0 fw-bold text-success"><i class="fas fa-brain"></i> Risultati AI</h4>
-            <span class="badge bg-success">{{ articolo.llm_results.count }} Analisi</span>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold text-white"><i class="fas fa-brain"></i> Risultati AI</h4>
+            <span class="badge bg-white text-primary-custom">{{ articolo.llm_results.count }} Analisi</span>
         </div>
         <div class="card-body">
             <div class="accordion" id="llmAccordion">
@@ -126,8 +165,8 @@
     </div>
 
     <div class="card mb-5 shadow-sm border-0">
-        <div class="card-header bg-white">
-            <h4 class="mb-0 fw-bold">Grafico Frequenza</h4>
+        <div class="card-header">
+            <h4 class="mb-0 fw-bold text-white">Grafico Frequenza</h4>
         </div>
         <div class="card-body">
             <div style="position: relative; height:40vh; width:100%">
@@ -137,8 +176,8 @@
     </div>
 
     <div class="card shadow-sm border-0 mb-5">
-        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <h4 class="mb-0 fw-bold">Elenco Termini</h4>
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold text-white">Elenco Termini</h4>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -158,11 +197,11 @@
                             <td class="fw-bold">{{ row.parola }}</td>
                             <td><span class="badge bg-light text-dark border">{{ row.occorrenze }}</span></td>
                             <td class="text-center">
-                                <a class="btn btn-sm btn-info text-white"
+                                <a class="btn btn-sm btn-action text-white"
                                     href="{% url 'testo:translate-termine' row.id %}">Traduci</a>
                             </td>
                             <td class="text-center">
-                                <a class="btn btn-sm btn-outline-info"
+                                <a class="btn btn-sm btn-outline-action"
                                     href="{% url 'testo:sinonimi' row.id %}">Sinonimi</a>
                             </td>
                         </tr>

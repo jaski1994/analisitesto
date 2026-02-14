@@ -1,41 +1,32 @@
+{% extends 'base.html' %}
 {% load static %}
-<!doctype html>
-<html lang="en">
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- FontAwesome CSS -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
-          integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
-          crossorigin="anonymous">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-          crossorigin="anonymous">
-    <link rel="stylesheet"
-          href="{% static 'css/style.css' %}">
-</head>
-
-
-<div class="container-fluid" id="div-details" style="text-align: center">
-{% block title %}
-    <h1>Crea un account</h1>
-{% endblock %}
 {% load crispy_forms_tags %}
-</div>
 
- <div class="container">
+{% block title %}Crea un account{% endblock %}
+
 {% block content %}
-    <form method="POST" class="form-group">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-success" style="margin-left:auto;margin-right:auto;display:block;">Registrati</button>
-        <br>
-        <p style="text-align:center">Sei già registrato? <a href="{% url 'testo:login' %}">Vai al login</a></p>
-
-    </form>
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1>Crea un account</h1>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-action btn-lg">Registrati</button>
+                        </div>
+                        <p class="text-center mt-3 mb-0">
+                            Sei già registrato? <a href="{% url 'testo:login' %}" class="text-action-custom fw-bold">Vai
+                                al login</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
- </div>
