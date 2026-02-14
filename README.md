@@ -2,7 +2,7 @@
 
 A Python-based text analysis tool developed with **Django** and **NLTK**.  
 It automates frequency analysis and content quality checks to significantly reduce manual review.  
-The project also integrates the **Ollama** tool with custom models and prompt engineering to enhance analysis capabilities.
+The project also integrates the **Ollama** tool with custom models and prompt engineering to enhance analysis capabilities. And implemented RAG (Retrieval-Augmented Generation) to improve the quality of the analysis.
 
 ## Features
 
@@ -10,6 +10,7 @@ The project also integrates the **Ollama** tool with custom models and prompt en
 - Automated content quality checks
 - Integration with Ollama for advanced text analysis
 - Admin panel for managing data and results
+- RAG (Retrieval-Augmented Generation) for improved analysis quality
 
 ## Requirements
 
@@ -19,18 +20,19 @@ The project also integrates the **Ollama** tool with custom models and prompt en
 
 ## Ollama Integration
 
-Ollama can also be used via Python by installing the `requests` library with pip.
-The application sends HTTP POST requests to the local Ollama API (`http://localhost:11434`). Alternatively, Ollama can be used via its Python client `pip install ollama`.
+Ollama can be used via its Python client `pip install ollama`.
 This enables model inference using custom prompts directly from the Django backend.
 
+# RAG Integration
 
+The RAG (Retrieval-Augmented Generation) feature allows the application to retrieve relevant context from a document and use it to generate a response to a query. This can be used to improve the quality of the analysis by providing more context to the model. i used **faiss** to index the documents and retrieve the relevant context.
 
 ## Installation
 
 1. **Clone the repository**  
    ```bash
-   git clone <your-repo-url>
-   cd <your-project-folder>
+   git clone https://github.com/jaski1994/analisitesto.git
+   cd analisitesto
    ```
 
 2. **Create and activate a virtual environment**  
