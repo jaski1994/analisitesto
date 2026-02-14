@@ -1,0 +1,69 @@
+:root {
+    --primary-color: #3f7c61;
+    /* Medium Forest - Lighter than Deep Forest */
+    /* Deep Forest */
+    --action-color: #74C69D;
+    /* Sage Accent */
+    --secondary-color: #D8F3DC;
+    /* Mint Frost */
+    --neutral-color: #F8FAF8;
+    /* Paper White */
+}
+
+body {
+    background-color: var(--neutral-color);
+    color: #333;
+}
+
+.bg-primary-custom {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.text-primary-custom {
+    color: var(--primary-color) !important;
+}
+
+.bg-secondary-custom {
+    background-color: var(--secondary-color) !important;
+}
+
+.btn-action {
+    background-color: var(--action-color);
+    border-color: var(--action-color);
+    color: white;
+}
+
+.btn-action:hover {
+    background-color: #5fb38e;
+    border-color: #5fb38e;
+    color: white;
+}
+
+.btn-outline-action {
+    color: var(--action-color);
+    border-color: var(--action-color);
+    background-color: transparent;
+}
+
+.btn-outline-action:hover {
+    background-color: var(--action-color);
+    color: white;
+}
+
+.text-action-custom {
+    color: var(--action-color) !important;
+}
+
+.card-header h1,
+.card-header h2,
+.card-header h3,
+.card-header h4,
+.card-header h5,
+.card-header h6 {
+    color: white;
+}
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}

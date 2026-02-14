@@ -1,0 +1,195 @@
+/* Custom Color Palette */
+:root {
+    --primary-color: #1B4332;
+    /* Deep Forest - Header, Sidebar, Bold Text */
+    --action-color: #74C69D;
+    /* Sage Accent - Buttons, Active States, Success Alerts */
+    --secondary-color: #D8F3DC;
+    /* Mint Frost - Highlights, Tooltips, Soft Backgrounds */
+    --neutral-bg: #F8FAF8;
+    /* Paper White - Main Content Area */
+    --text-color: #1B4332;
+    /* Using Primary for strong text */
+}
+
+body {
+    background-color: var(--neutral-bg);
+    color: #333;
+    /* Default text color, override with primary path for headers */
+}
+
+/* Header / Navbar */
+.my-navbar {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    /* Fixing the box shadow to match the darker theme if needed, or keeping it subtle */
+}
+
+.navbar-brand {
+    color: var(--secondary-color) !important;
+    font-weight: bold;
+}
+
+.nav-link {
+    color: var(--secondary-color) !important;
+    border-bottom: 4px solid transparent;
+}
+
+.nav-link:hover {
+    color: white !important;
+    border-bottom-color: var(--action-color) !important;
+}
+
+.nav-active a {
+    color: white !important;
+    border-bottom-color: var(--action-color) !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--action-color);
+    border-color: var(--action-color);
+    color: white;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.btn-success {
+    background-color: var(--action-color);
+    border-color: var(--action-color);
+}
+
+/* Headings and Bold Text */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong,
+b {
+    color: var(--primary-color);
+}
+
+/* Alerts */
+.alert-success {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    border-color: var(--action-color);
+}
+
+/* Tables */
+.table thead th {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Sidebar / Card headers if any */
+.card-header {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Active states */
+.active {
+    background-color: var(--action-color) !important;
+    color: white !important;
+}
+
+/* Custom Utilities */
+.bg-primary-custom {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.text-primary-custom {
+    color: var(--primary-color) !important;
+}
+
+.text-action-custom {
+    color: var(--action-color) !important;
+}
+
+.bg-secondary-custom {
+    background-color: var(--secondary-color) !important;
+}
+
+.btn-action {
+    background-color: var(--action-color);
+    color: white;
+    border: none;
+}
+
+.btn-action:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Card overrides */
+.card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border-bottom: none;
+}
+
+/* Badge overrides */
+.badge-success {
+    background-color: var(--action-color);
+    color: white;
+}
+
+.badge-secondary {
+    background-color: #ccc;
+    color: #333;
+}
+
+/* Text & Border Overrides */
+.text-success {
+    color: var(--action-color) !important;
+}
+
+.border-success {
+    border-color: var(--action-color) !important;
+}
+
+.bg-light {
+    background-color: var(--neutral-bg) !important;
+}
+
+/* Fix visibility of headers inside dark containers */
+.card-header h1,
+.card-header h2,
+.card-header h3,
+.card-header h4,
+.card-header h5,
+.card-header h6,
+.bg-primary-custom h1,
+.bg-primary-custom h2,
+.bg-primary-custom h3,
+.bg-primary-custom h4,
+.bg-primary-custom h5,
+.bg-primary-custom h6 {
+    color: white !important;
+}
+
+/* Outline Button for Sage Accent */
+.btn-outline-action {
+    color: var(--action-color);
+    border-color: var(--action-color);
+    background-color: transparent;
+}
+
+.btn-outline-action:hover {
+    background-color: var(--action-color);
+    color: white;
+}
