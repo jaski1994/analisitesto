@@ -77,3 +77,37 @@ class LlmEmptyForm(forms.Form):
             ),
             Submit('submit', 'Avvia Analisi AI', css_class='btn btn-primary w-100')
         )
+
+
+
+class ClassificationForm(forms.Form):
+    """Form dedicato per la classificazione con categorie personalizzate."""
+    text = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 6,
+            'placeholder': 'Inserisci il testo da classificare...'
+        }),
+        label='Testo da classificare',
+        required=True
+    )
+    
+class RAGForm(forms.Form):
+    """Form dedicato per la classificazione con categorie personalizzate."""
+    title = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Inserisci il titolo del documento...'
+        }),
+        label='Titolo Documento',
+        required=True
+    )
+    text = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 6,
+            'placeholder': 'Inserisci il testo da classificare...'
+        }),
+        label='Testo da classificare',
+        required=True
+    )   

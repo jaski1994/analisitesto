@@ -18,6 +18,12 @@ class Articolo(models.Model):
     frequenza_media = models.CharField(max_length=6, default=None, null=True)
     quantita_termini = models.CharField(max_length=8, default=None, null=True)
     complessita = models.IntegerField(default=None, null=True)
+    readability_score = models.FloatField(default=None, null=True)
+    lexical_diversity = models.FloatField(default=None, null=True)
+    spelling_score = models.FloatField(default=None, null=True)
+    clarity_score = models.FloatField(default=None, null=True)
+    ai_rating = models.FloatField(default=None, null=True)
+    final_score = models.FloatField(default=None, null=True)
     autore = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

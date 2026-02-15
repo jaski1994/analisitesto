@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+from .embbdingService import create_and_save_index
 
 class LLMResult(models.Model):
     """
@@ -26,3 +27,24 @@ class LLMResult(models.Model):
 
     def __str__(self):
         return f"{self.tipo_operazione} per {self.articolo.titolo} - {self.utente.username}"
+
+
+
+
+
+class Document(models.Model):
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    faiss_index_path = models.CharField(max_length=500, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    chunks = models.JSONField(blank=True, null=True)
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        index_path, chunks = create_and_save_index(self)
+        self.faiss_index_path = index_path
+        self.chunks = chunks
+        
+        # Remove force_insert if present to avoid unique constraint error on update
+        kwargs.pop('force_insert', None)
+        super().save(*args, **kwargs)

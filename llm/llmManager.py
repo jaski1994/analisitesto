@@ -1,8 +1,10 @@
 import ollama
+from ollama import AsyncClient
 
 class LLMManager:
     def __init__(self):
         self.client = ollama.Client()
+        self.async_client = AsyncClient()
         self.modelsSelected = ["llama3.2:3b","phi4-mini","qwen3:4b"]
 
     def get_available_models(self):
@@ -80,24 +82,45 @@ class LLMManager:
             print(f"Errore caricamento: {e}")
             return False
 
+
+    async def call_the_llm(self, model="llama3.2:3b", prompt="", options={}):
+       
+        try:
+            response = await self.async_client.generate(
+                model=model,
+                prompt=prompt,
+                stream=False,
+                options=options
+            )
+            
+            return response
+        
+        except Exception as e:
+            return str(e)
+
+
+
+
+
+
 # --- Utilizzo ---
-manager = LLMManager()
-# 1
-print("--- MODELLI DISPONIBILI (SU DISCO) ---")
-for m in manager.get_available_models():
-    print(f"- {m['name']} ({m['size_gb']:.2f} GB)")
-
-# 2
-print("\n--- STATO MEMORIA (RAM vs VRAM) ---")
-attivi = manager.get_status_ram_vram()
-if not attivi:
-    print("Nessun modello caricato al momento.")
-else:
-    for a in attivi:
-        print(f"- {a['name']}: {a['location']}")
-
-# 3
-print("Modelli caricati:", manager.check_loaded_models())
-
-# 4
-print(manager.unload_model("phi3.5"))
+# manager = LLMManager()
+# # 1
+# print("--- MODELLI DISPONIBILI (SU DISCO) ---")
+# for m in manager.get_available_models():
+#     print(f"- {m['name']} ({m['size_gb']:.2f} GB)")
+# 
+# # 2
+# print("\n--- STATO MEMORIA (RAM vs VRAM) ---")
+# attivi = manager.get_status_ram_vram()
+# if not attivi:
+#     print("Nessun modello caricato al momento.")
+# else:
+#     for a in attivi:
+#         print(f"- {a['name']}: {a['location']}")
+# 
+# # 3
+# print("Modelli caricati:", manager.check_loaded_models())
+# 
+# # 4
+# print(manager.unload_model("phi3.5"))

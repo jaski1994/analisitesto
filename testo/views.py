@@ -71,6 +71,16 @@ def articolo_insert(request):
             articolo.frequenza_media = elaborator.average_frequency
             articolo.quantita_termini = elaborator.terms_count
             articolo.complessita = elaborator.calculate_complexity()
+            
+            # Calcolo punteggi avanzati
+            scores = elaborator.calculate_score(articolo.testo)
+            articolo.readability_score = scores.get('readability_gulpease')
+            articolo.lexical_diversity = scores.get('lexical_diversity')
+            articolo.spelling_score = scores.get('spelling_score')
+            articolo.clarity_score = scores.get('clarity_score_nltk')
+            articolo.ai_rating = scores.get('ai_rating')
+            articolo.final_score = scores.get('final_score')
+
             articolo.autore = request.user
             articolo.save()
             # print(elaborator.phrases_number)
@@ -84,7 +94,7 @@ def articolo_insert(request):
                 termine.save()
             del (elaborator)
             messages.success(request, 'Salvataggio ha avuto successo!')
-            return redirect('testo:articolo-add')  # rimanda alla pagina di inserimento
+            return redirect('testo:articolo-details', id=articolo.id)
         else:
             messages.error(request, 'Salvataggio non ha avuto successo!')
     else:

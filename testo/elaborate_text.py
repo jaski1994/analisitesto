@@ -129,14 +129,10 @@ class Text_elaborator():
             else:
                 non_common_words_list.append(term)
 
-        #Formula di complessità che prende ispirazione da Dale-Chall readability formula modificata appositamente per la nostra piattaforma
-        #utilizziamo un dataset di parole comuni trovato come open data la cui debolezza è la dimensione limitata
-        #per compensare questa debolezza abbiamo pesato di più la presenza di parole comuni all'interno della nostra formula
-        #questa formula è l'unica che è riuscita a passare i nostri test di qualità a differenza delle altre due che non li hanno passati
         if self.terms_count == 0 or self.terms_with_frequency == 0:
             return 0
         else:
-                                    return ((0.1579 * (len(non_common_words_list)) / ((len(common_words_list)+1)*1.5) * 100)) + (0.0496 * (self.terms_count / self._phrases_number))
+            return ((0.1579 * (len(non_common_words_list)) / ((len(common_words_list)+1)*1.5) * 100)) + (0.0496 * (self.terms_count / self._phrases_number))
 
 def get_synonyms(term):
     """
