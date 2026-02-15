@@ -22,9 +22,6 @@ class Migration(migrations.Migration):
                 ('data', models.DateField()),
                 ('testo', models.TextField()),
                 ('data_caricamento', models.DateField(default=datetime.datetime.now)),
-                ('frequenza_media', models.CharField(default=None, max_length=6, null=True)),
-                ('quantita_termini', models.CharField(default=None, max_length=8, null=True)),
-                ('complessita', models.IntegerField(default=None, null=True)),
             ],
             options={
                 'verbose_name_plural': 'Articolo',
