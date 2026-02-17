@@ -181,7 +181,13 @@ def load_llm(request, llm_name):
     manager.load_model(llm_name)
     return redirect('testo:profile')
 
-
+def pull_llm(request, llm_name):
+    manager = LLMManager() 
+    manager.pull_model_thread(llm_name)
+    # Add a message saying download started
+    from django.contrib import messages
+    messages.info(request, f"Download di {llm_name} avviato in background. Potrebbe richiedere alcuni minuti.")
+    return redirect('testo:profile')
 
 def rag_elaborazione(request):
     """
