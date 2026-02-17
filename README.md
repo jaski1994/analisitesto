@@ -14,9 +14,8 @@ The project also integrates the **Ollama** tool with custom models and prompt en
 
 ## Requirements
 
-- Python 3.10+
-- pip
-- Virtual environment (recommended)
+- Docker
+- Docker Compose
 
 ## Ollama Integration
 
@@ -35,33 +34,12 @@ The RAG (Retrieval-Augmented Generation) feature allows the application to retri
    cd analisitesto
    ```
 
-2. **Create and activate a virtual environment**  
+2. **run the docker**
    ```bash
-   python -m venv venv
-   source venv/bin/activate  
+   docker-compose up --build
    ```
 
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Apply database migrations**
-   ```bash
-   python manage.py migrate
-   ```
-
-5. **Create a superuser**
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-6. **Run the development server**
-   ```bash
-   python manage.py runserver
-   ```
-
-7. **Open the app in your browser**
+3. **Open the app in your browser**
    ```bash
    http://localhost:8000
    ```
