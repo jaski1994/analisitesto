@@ -13,11 +13,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='articolo',
-            name='data_caricamento',
-            field=models.DateField(default=datetime.datetime.now),
-        ),
-        migrations.AddField(
-            model_name='articolo',
             name='frequenza_media',
             field=models.CharField(default=None, max_length=6, null=True),
         ),

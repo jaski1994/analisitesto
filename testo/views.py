@@ -221,8 +221,12 @@ def profile_view(request):
     
     # Inizializza il manager dell'LLM
     manager = LLMManager() 
-    available_on_disk = {m['name'].removesuffix(":latest") for m in manager.get_available_models()}
-    already_loaded = {m['name'].removesuffix(":latest") for m in manager.check_loaded_models()}
+    try:
+        available_on_disk = {m['name'].removesuffix(":latest") for m in manager.get_available_models() }
+        already_loaded = {m['name'].removesuffix(":latest") for m in manager.check_loaded_models()}
+    except ConnectionError:
+        available_on_disk = set()
+        already_loaded = set()
     model_detail = []
     for m in manager.modelsSelected:
         model_detail.append({

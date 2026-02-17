@@ -38,7 +38,8 @@
                                 {% if model.onDisk %}
                                 <br><span class="badge badge-success">Caricato</span>
                                 {% else %}
-                                <br><span class="badge badge-secondary">Non Caricato</span>
+                                <br><span class="badge badge-secondary"><a href="{% url 'llm:llm-pull' model.name %}"
+                                        class="btn btn-sm btn-outline-action">Scarica</a></span>
                                 {% endif %}
                             </div>
 
