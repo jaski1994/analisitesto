@@ -47,7 +47,10 @@ RUN adduser --disabled-password --gecos '' appuser
 USER appuser
 
 # Copy project files
-COPY . .
+COPY --chown=appuser:appuser . .
+
+# Download NLTK data
+RUN python testo/download_nltk.py
 
 # Expose port
 EXPOSE 8000
