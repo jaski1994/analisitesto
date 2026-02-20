@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    build: .
+    image: ghcr.io/jaski1994/analisi:latest
     command: sh setup.sh
     volumes:
       - .:/app
