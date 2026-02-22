@@ -143,22 +143,74 @@ def empty_classificazione_llm(request):
 
 ## Prompt Specialistici v2
 def get_specialized_prompt(testo_utente, task):
-    categories = ["tecnologia", "sport", "politica", "economia", "cultura", "scienza", "salute", "ambiente", "cronaca", "esteri", "spettacolo", "arte", "musica", 
-                "cinema", "moda", "cucina", "viaggi", "automobilismo", "finanza", "istruzione", "lavoro", "diritto", "storia", "filosofia", "religione", "gossip", "videogame", "informatica", "altro"]
-    
+    categories = [
+        "tecnologia", "sport", "politica", "economia", "cultura", "scienza",
+        "salute", "ambiente", "cronaca", "esteri", "spettacolo", "arte", "musica",
+        "cinema", "moda", "cucina", "viaggi", "automobilismo", "finanza",
+        "istruzione", "lavoro", "diritto", "storia", "filosofia", "religione",
+        "gossip", "videogame", "informatica", "altro"
+    ]
+
     if task == "grammatica":
-        return f"Sei un correttore di bozze esperto. Analizza il testo seguente, correggi errori grammaticali, di punteggiatura e ortografia. Restituisci il testo corretto.\n\nTesto: {testo_utente}"
+        return (
+            "Sei un correttore di bozze esperto con venti anni di esperienza editoriale. "
+            "Il tuo compito è analizzare il testo fornito e:\n"
+            "1. Correggere eventuali errori grammaticali, ortografici e di punteggiatura.\n"
+            "2. Mantenere lo stile e il tono originali dell'autore.\n"
+            "3. NON riscrivere o parafrasare frasi che sono già corrette.\n"
+            "4. Restituire SOLO il testo corretto, senza commenti o spiegazioni aggiuntive.\n\n"
+            f"Testo da correggere:\n{testo_utente}"
+        )
+
     elif task == "miglioramento":
-        return f"Sei un editor professionista. Riscrivi il testo seguente per renderlo più formale, fluido e persuasivo: {testo_utente}"
+        return (
+            "Sei un editor professionista che lavora per una rivista letteraria italiana di alto livello. "
+            "Il tuo compito è migliorare il testo seguente:\n"
+            "1. Rendi il testo più formale, fluido e persuasivo.\n"
+            "2. Elimina ridondanze, sostituisci vocaboli banali con termini più precisi ed evocativi.\n"
+            "3. Assicurati che la struttura delle frasi sia bilanciata e armoniosa.\n"
+            "4. Mantieni il significato e le informazioni chiave dell'originale.\n"
+            "5. Restituisci SOLO il testo migliorato, senza commenti aggiuntivi.\n\n"
+            f"Testo originale:\n{testo_utente}"
+        )
+
     elif task == "traduci":
-        return f"Agisci come un traduttore professionista madrelingua. Traduci il testo seguente in inglese: {testo_utente}"
+        return (
+            "Sei un traduttore professionista madrelingua inglese, specializzato in testi italiani. "
+            "Il tuo compito è tradurre il testo seguente dall'italiano all'inglese:\n"
+            "1. La traduzione deve essere naturale e idiomatica, non letterale.\n"
+            "2. Mantieni il tono e lo stile del testo originale (formale, informale, tecnico, ecc.).\n"
+            "3. Se un termine non ha un equivalente diretto, usa il termine più vicino concettualmente.\n"
+            "4. Restituisci SOLO il testo tradotto in inglese, senza commenti o note aggiuntive.\n\n"
+            f"Testo in italiano:\n{testo_utente}"
+        )
+
     elif task == "classificazione":
-        return f"""Classifica il seguente testo in UNA delle seguenti categorie: {', '.join(categories)}.
-Rispondi SOLO con il nome della categoria, niente altro.
-Testo: {testo_utente}
-Categoria:"""
+        categories_str = ', '.join(categories)
+        return (
+            f"Sei un esperto classificatore di contenuti editoriali. "
+            f"Classifica il seguente testo in UNA SOLA delle categorie fornite.\n\n"
+            f"Categorie disponibili: {categories_str}\n\n"
+            f"Regole:\n"
+            f"- Rispondi SOLO con il nome esatto della categoria (una parola).\n"
+            f"- Non aggiungere punteggiatura, spiegazioni o testo extra.\n"
+            f"- Se il testo è ambiguo, scegli la categoria più dominante.\n\n"
+            f"Testo da classificare:\n{testo_utente}\n\n"
+            f"Categoria:"
+        )
+
     elif task == "riassunto":
-        return f"Sei un riassuntore di testi. Riassumi il testo seguente: {testo_utente}"
+        return (
+            "Sei un esperto di comunicazione e sintesi dei contenuti. "
+            "Il tuo compito è creare un riassunto chiaro e conciso del testo seguente:\n"
+            "1. Il riassunto deve coprire i punti principali e le informazioni chiave.\n"
+            "2. Scrivi in italiano, in modo chiaro e scorrevole.\n"
+            "3. La lunghezza del riassunto deve essere circa il 20-25% del testo originale.\n"
+            "4. NON aggiungere interpretazioni personali o informazioni non presenti nel testo.\n"
+            "5. Restituisci SOLO il riassunto, senza prefazioni o commenti.\n\n"
+            f"Testo da riassumere:\n{testo_utente}"
+        )
+
     return testo_utente
 
 
@@ -184,10 +236,16 @@ def load_llm(request, llm_name):
 def pull_llm(request, llm_name):
     manager = LLMManager() 
     manager.pull_model_thread(llm_name)
-    # Add a message saying download started
-    from django.contrib import messages
-    messages.info(request, f"Download di {llm_name} avviato in background. Potrebbe richiedere alcuni minuti.")
-    return redirect('testo:profile')
+    return JsonResponse({"message": f"Pull di {llm_name} avviato in background."})
+
+def pull_progress(request, llm_name):
+    """Returns the current download progress for a given model from cache."""
+    from django.core.cache import cache
+    cache_key = f"ollama_pull_{llm_name.replace(':', '_')}"
+    data = cache.get(cache_key)
+    if data is None:
+        return JsonResponse({"progress": None, "status": "not_started"})
+    return JsonResponse(data)
 
 def rag_elaborazione(request):
     """

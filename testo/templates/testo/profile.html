@@ -32,28 +32,44 @@
                 <div class="card-body p-0">
                     <ul class="list-group list-group-flush">
                         {% for model in available_models %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>{{ model.name }}</strong>
-                                {% if model.onDisk %}
-                                <br><span class="badge badge-success">Caricato</span>
-                                {% else %}
-                                <br><span class="badge badge-secondary"><a href="{% url 'llm:llm-pull' model.name %}"
-                                        class="btn btn-sm btn-outline-action">Scarica</a></span>
-                                {% endif %}
+                        <li class="list-group-item" id="model-row-{{ forloop.counter }}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ model.name }}</strong>
+                                    {% if model.onDisk %}
+                                    <br><span class="badge badge-success">Su disco</span>
+                                    {% else %}
+                                    <br><span class="badge badge-secondary" id="badge-{{ forloop.counter }}">Non
+                                        scaricato</span>
+                                    {% endif %}
+                                </div>
+
+                                <div class="btn-group">
+                                    {% if not model.onDisk %}
+                                    <button class="btn btn-sm btn-outline-action pull-btn" data-model="{{ model.name }}"
+                                        data-row="{{ forloop.counter }}" onclick="startPull(this)">
+                                        Scarica
+                                    </button>
+                                    {% elif model.isLoaded %}
+                                    <a href="{% url 'llm:llm-unload' model.name %}"
+                                        class="btn btn-sm btn-outline-action">Unload</a>
+                                    {% else %}
+                                    <a href="{% url 'llm:llm-load' model.name %}" class="btn btn-sm btn-action">Load</a>
+                                    {% endif %}
+                                </div>
                             </div>
 
-                            <div class="btn-group">
-                                {% if model.isLoaded %}
-                                <a href="{% url 'llm:llm-unload' model.name %}" class="btn btn-sm btn-outline-action">
-                                    Unload
-                                </a>
-                                {% else %}
-                                <a href="{% url 'llm:llm-load' model.name %}" class="btn btn-sm btn-action">
-                                    Load
-                                </a>
-                                {% endif %}
+                            {% if not model.onDisk %}
+                            <div class="mt-2 d-none" id="progress-container-{{ forloop.counter }}">
+                                <div class="progress" style="height: 18px;">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+                                        id="progress-bar-{{ forloop.counter }}" role="progressbar" style="width: 0%">0%
+                                    </div>
+                                </div>
+                                <small class="text-muted" id="progress-status-{{ forloop.counter }}">Avvio
+                                    download...</small>
                             </div>
+                            {% endif %}
                         </li>
                         {% empty %}
                         <li class="list-group-item text-muted">Nessun modello disponibile.</li>
@@ -100,17 +116,73 @@
         if (e.target.classList.contains('select-checkbox')) {
             const checkboxes = document.querySelectorAll('.select-checkbox:checked');
             const compareBtn = document.getElementById('compareBtn');
-
-            // Enable button only if exactly 2 are selected
             compareBtn.disabled = (checkboxes.length !== 2);
-
-            // Optional: Alert if user tries to select a 3rd item
             if (checkboxes.length > 2) {
                 alert("Puoi selezionare solo 2 testi alla volta.");
                 e.target.checked = false;
-                compareBtn.disabled = false; // keep it enabled for the 2 already checked
+                compareBtn.disabled = false;
             }
         }
     });
+
+    const activePollers = {};
+
+    function startPull(btn) {
+        const modelName = btn.getAttribute('data-model');
+        const rowIndex = btn.getAttribute('data-row');
+
+        // Disable button and show progress bar
+        btn.disabled = true;
+        btn.textContent = 'Download avviato...';
+        const container = document.getElementById('progress-container-' + rowIndex);
+        if (container) container.classList.remove('d-none');
+
+        // Fire the pull
+        fetch(`/llm/pull/${modelName}`, { method: 'GET' })
+            .then(r => r.json())
+            .then(() => {
+                // Start polling
+                activePollers[modelName] = setInterval(() => pollProgress(modelName, rowIndex), 1500);
+            })
+            .catch(err => {
+                console.error('Pull start failed', err);
+                if (container) document.getElementById('progress-status-' + rowIndex).textContent = 'Errore avvio download.';
+            });
+    }
+
+    function pollProgress(modelName, rowIndex) {
+        fetch(`/llm/pull-progress/${modelName}`)
+            .then(r => r.json())
+            .then(data => {
+                const bar = document.getElementById('progress-bar-' + rowIndex);
+                const statusEl = document.getElementById('progress-status-' + rowIndex);
+                const badgeEl = document.getElementById('badge-' + rowIndex);
+
+                if (data.progress === null || data.status === 'not_started') return;
+
+                if (data.progress === -1) {
+                    // Error
+                    clearInterval(activePollers[modelName]);
+                    if (bar) { bar.style.width = '100%'; bar.classList.add('bg-danger'); bar.textContent = 'Errore'; }
+                    if (statusEl) statusEl.textContent = data.status;
+                    return;
+                }
+
+                if (bar) {
+                    bar.style.width = data.progress + '%';
+                    bar.textContent = data.progress + '%';
+                }
+                if (statusEl) statusEl.textContent = data.status || 'Download in corso...';
+                if (badgeEl) badgeEl.textContent = data.progress + '%';
+
+                if (data.progress >= 100 && data.status === 'success') {
+                    clearInterval(activePollers[modelName]);
+                    if (bar) { bar.classList.remove('progress-bar-animated'); bar.textContent = '✓ Completato'; }
+                    if (statusEl) statusEl.textContent = 'Download completato! Ricarica la pagina.';
+                    if (badgeEl) { badgeEl.textContent = 'Completato'; badgeEl.classList.replace('badge-secondary', 'badge-success'); }
+                }
+            })
+            .catch(err => console.error('Poll error', err));
+    }
 </script>
 {% endblock %}
