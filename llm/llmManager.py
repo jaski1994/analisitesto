@@ -141,19 +141,36 @@ class LLMManager:
             return False
 
     def pull_model_thread(self, model_name):
-        """Standard sync pull in a background thread."""
+        """Streaming sync pull in a background thread with cache-based progress tracking."""
         import threading
-        
+        from django.core.cache import cache
+
+        cache_key = f"ollama_pull_{model_name.replace(':', '_')}"
+
         def run_pull():
             print(f"Starting background pull for {model_name}...")
+            cache.set(cache_key, {"progress": 0, "status": "starting", "completed": 0, "total": 0}, timeout=3600)
             try:
-                # Use sync client for simplicity in thread
-                self.client.pull(model_name)
+                for chunk in self.client.pull(model_name, stream=True):
+                    status = getattr(chunk, 'status', '') or ''
+                    completed = getattr(chunk, 'completed', 0) or 0
+                    total = getattr(chunk, 'total', 0) or 0
+                    percent = round((completed / total) * 100, 1) if total > 0 else 0
+                    cache.set(cache_key, {
+                        "progress": percent,
+                        "status": status,
+                        "completed": completed,
+                        "total": total,
+                    }, timeout=3600)
+
+                # Mark as done
+                cache.set(cache_key, {"progress": 100, "status": "success", "completed": 0, "total": 0}, timeout=60)
                 print(f"Successfully pulled {model_name}")
             except Exception as e:
+                cache.set(cache_key, {"progress": -1, "status": f"error: {e}", "completed": 0, "total": 0}, timeout=300)
                 print(f"Failed to pull {model_name}: {e}")
 
-        thread = threading.Thread(target=run_pull)
+        thread = threading.Thread(target=run_pull, daemon=True)
         thread.start()
         return True
 
